@@ -1,0 +1,28 @@
+[package]
+name = "acric"
+version = "0.0.1"
+edition = "2021"
+authors = ["z1xus"]
+
+[dependencies]
+rand = "0.8.5"
+rdev = { version= "0.5.3", features = ["unstable_grab"] }
+tray-item = "0.10.0"
+
+[build-dependencies]
+embed-resource = "2.3"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+debug = false
+
+[profile.release.build-override]
+opt-level = 3
+codegen-units = 1
+
+[profile.release.package."*"]
+opt-level = 3

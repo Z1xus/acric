@@ -9,14 +9,14 @@ Your most realistic, fully-external autoclicker. Silent, simple and convenient.
 ### Features
 - Realistic CPS calculation
 - Hotkey support
-- Fatigue fimulation
+- Fatigue simulation
 - Tray icon
 
 ### Use it on your own risk.
 In games, autoclicking as well as any other form of automated input is generally considered cheating in and is often punished by the game developers. I, as an author do not endorse or support cheating in games.
 
 ### Usage
-1. Download the latest release from the [Releases](https://github.com/acric/releases) page.
+1. Download the latest release from the [Releases](https://github.com/z1xus/acric/releases) page.
 2. Run the executable.
 3. The application will appear in the system tray.
 

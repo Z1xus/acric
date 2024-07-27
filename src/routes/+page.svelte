@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { fade, fly, scale } from "svelte/transition";
+	
+	import { base } from "$app/paths";
 
 	let features = ["realistic cps calculation", "hotkey support", "fatigue simulation", "tray icon"];
 
@@ -121,7 +123,7 @@
 		</div>
 
 		<a
-			href="/download"
+			href="{base}/download"
 			in:fly={{ y: 50, duration: 1000, delay: 2400 }}
 			class="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:from-blue-600 hover:to-purple-600"
 		>

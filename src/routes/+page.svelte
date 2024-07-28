@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { fade, fly, scale } from "svelte/transition";
-	
+
 	import { base } from "$app/paths";
 
 	let features = ["realistic cps calculation", "hotkey support", "fatigue simulation", "tray icon"];
@@ -10,12 +10,21 @@
 	let chartExpanded = false;
 	let showFormula = false;
 
+	let windowWidth: number;
+
+	$: isMobile = windowWidth <= 480;
+	$: if (isMobile) chartExpanded = false;
+
 	onMount(() => {
 		visible = true;
+		windowWidth = window.innerWidth;
+		window.addEventListener("resize", () => (windowWidth = window.innerWidth));
 	});
 
 	function toggleChart() {
-		chartExpanded = !chartExpanded;
+		if (!isMobile) {
+			chartExpanded = !chartExpanded;
+		}
 	}
 
 	function toggleFormula() {
@@ -88,19 +97,22 @@
 					</li>
 				</ul>
 				<p class="mt-4 mb-2">
-					cps chart for reference (click to {chartExpanded ? "minimize" : "expand"}):
+					cps chart for reference {!isMobile
+						? `(click to ${chartExpanded ? "minimize" : "expand"})`
+						: ""}:
 				</p>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<!-- svelte-ignore a11y-no-static-element-interactions -->
 				<div
-					class="bg-gray-700 mt-2 flex items-center justify-center cursor-pointer transition-all duration-300 ease-in-out overflow-hidden"
-					class:w-full={chartExpanded}
-					class:h-42={chartExpanded}
-					class:w-64={!chartExpanded}
-					class:h-18={!chartExpanded}
+					class="bg-gray-700 mt-2 flex items-center justify-center transition-all duration-300 ease-in-out overflow-hidden"
+					class:cursor-pointer={!isMobile}
+					class:w-full={chartExpanded && !isMobile}
+					class:h-42={chartExpanded && !isMobile}
+					class:w-64={!chartExpanded || isMobile}
+					class:h-18={!chartExpanded || isMobile}
 					on:click={toggleChart}
 				>
-					{#if chartExpanded}
+					{#if chartExpanded && !isMobile}
 						<div
 							in:scale={{ duration: 300, start: 0.5 }}
 							class="w-full h-full flex items-center justify-center"

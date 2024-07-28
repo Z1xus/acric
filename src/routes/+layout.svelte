@@ -30,10 +30,10 @@
 	</main>
 
 	<footer class="bg-gray-800 py-4 text-center text-sm relative">
-		<p>copyright &copy; 2024 z1xus and contributors</p>
+		<p class="mx-10">copyright &copy; 2024 z1xus and contributors</p>
 		<a
 			href="https://github.com/z1xus/acric"
-			class="absolute left-4 bottom-4 text-gray-400 hover:text-white transition-colors"
+			class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
 			aria-label="GitHub"
 		>
 			<svg

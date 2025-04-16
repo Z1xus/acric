@@ -11,10 +11,12 @@ use tray_item::{IconSource, TrayItem};
 static ACTIVE: AtomicBool = AtomicBool::new(true);
 static CLICKING: AtomicBool = AtomicBool::new(false);
 static TOGGLE_MODE: AtomicBool = AtomicBool::new(false);
+static RIGHT_CLICK_MODE: AtomicBool = AtomicBool::new(false);
 
 enum Message {
     ToggleMode,
     ToggleActive,
+    ToggleClickType,
     Quit,
     UpdateTray,
 }
@@ -39,6 +41,14 @@ fn main() {
         .inner_mut()
         .add_menu_item_with_id("Hold to Click [MB5]", move || {
             toggle_mode_tx.send(Message::ToggleMode).unwrap();
+        })
+        .unwrap();
+
+    let click_type_tx = tx.clone();
+    let click_type_id = tray
+        .inner_mut()
+        .add_menu_item_with_id("Left Click Mode", move || {
+            click_type_tx.send(Message::ToggleClickType).unwrap();
         })
         .unwrap();
 
@@ -72,6 +82,19 @@ fn main() {
                 let new_state = !ACTIVE.load(Ordering::Relaxed);
                 ACTIVE.store(new_state, Ordering::Relaxed);
                 update_active_state(&mut tray, active_toggle_id, new_state);
+            }
+            Ok(Message::ToggleClickType) => {
+                let new_state = !RIGHT_CLICK_MODE.fetch_xor(true, Ordering::Relaxed);
+                let new_label = if new_state {
+                    "Right Click Mode"
+                } else {
+                    "Left Click Mode"
+                };
+                tray.inner_mut()
+                    .set_menu_item_label(new_label, click_type_id)
+                    .unwrap();
+                #[cfg(debug_assertions)]
+                println!("Click mode changed to: {}", if new_state { "Right" } else { "Left" });
             }
             Ok(Message::UpdateTray) => {
                 let active = ACTIVE.load(Ordering::Relaxed);
@@ -173,10 +196,15 @@ fn calculate_cps(rng: &mut impl Rng, t: f64, fatigue: f64) -> f64 {
 }
 
 fn click(rng: &mut impl Rng) {
-    let delay = Duration::from_millis(rng.gen_range(5..=25));
-    let _ = simulate(&EventType::ButtonPress(Button::Left));
+    let delay = Duration::from_millis(rng.random_range(5..=25));
+    let button = if RIGHT_CLICK_MODE.load(Ordering::Relaxed) {
+        Button::Right
+    } else {
+        Button::Left
+    };
+    let _ = simulate(&EventType::ButtonPress(button));
     std::thread::sleep(delay);
-    let _ = simulate(&EventType::ButtonRelease(Button::Left));
+    let _ = simulate(&EventType::ButtonRelease(button));
     std::thread::sleep(delay);
 }
 

@@ -156,15 +156,15 @@ fn calculate_cps(rng: &mut impl Rng, t: f64, fatigue: f64) -> f64 {
     let base_cps = 13.0 * (1.0 - f64::exp(-0.5 * t));
 
     let time_factor = (t * 0.1).sin().abs() + 0.5;
-    let amplitude = 2.0 + rng.gen_range(0.0..1.0);
+    let amplitude = 2.0 + rng.random_range(0.0..1.0);
     let sin_variation = (t * 2.0).sin() * amplitude * time_factor;
 
-    let noise = rng.gen_range(-0.5..0.5);
+    let noise = rng.random_range(-0.5..0.5);
 
     let mut cps = base_cps + sin_variation + noise;
 
-    if rng.gen_bool(0.02) {
-        cps += rng.gen_range(0.5..1.5);
+    if rng.random_bool(0.02) {
+        cps += rng.random_range(0.5..1.5);
     }
 
     cps *= 1.0 - (fatigue * 0.3);
@@ -181,7 +181,7 @@ fn click(rng: &mut impl Rng) {
 }
 
 fn clicker_thread() {
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
     let mut t = 0.0;
     let mut last_click = Instant::now();
     let mut click_count = 0;
@@ -201,17 +201,17 @@ fn clicker_thread() {
                 Duration::from_secs(1)
             };
 
-            let variable_interval = click_interval + Duration::from_millis(rng.gen_range(0..5));
+            let variable_interval = click_interval + Duration::from_millis(rng.random_range(0..5));
 
             if now.duration_since(last_click) >= variable_interval {
-                if rng.gen_bool(0.99) {
+                if rng.random_bool(0.99) {
                     click(&mut rng);
-                } else if rng.gen_bool(0.5) {
+                } else if rng.random_bool(0.5) {
                     #[cfg(debug_assertions)]
                     println!("misclick!");
                 } else {
                     click(&mut rng);
-                    std::thread::sleep(Duration::from_millis(rng.gen_range(10..30)));
+                    std::thread::sleep(Duration::from_millis(rng.random_range(10..30)));
                     click(&mut rng);
                     #[cfg(debug_assertions)]
                     println!("double click!");
@@ -223,15 +223,15 @@ fn clicker_thread() {
                 #[cfg(debug_assertions)]
                 println!("clicked at {:.2} cps (fatigue: {:.2})", cps, fatigue);
 
-                if rng.gen_bool(0.1) {
-                    let pause_duration = Duration::from_millis(rng.gen_range(20..50));
+                if rng.random_bool(0.1) {
+                    let pause_duration = Duration::from_millis(rng.random_range(20..50));
                     std::thread::sleep(pause_duration);
                     #[cfg(debug_assertions)]
                     println!("short pause for {:?}", pause_duration);
                 }
 
-                if click_count > 50 && rng.gen_bool(0.02) {
-                    let pause_duration = Duration::from_millis(rng.gen_range(100..300));
+                if click_count > 50 && rng.random_bool(0.02) {
+                    let pause_duration = Duration::from_millis(rng.random_range(100..300));
                     std::thread::sleep(pause_duration);
                     click_count = 0;
                     t = 0.0;

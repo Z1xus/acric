@@ -1,16 +1,16 @@
 [package]
 name = "acric"
-version = "0.0.1"
+version = "0.0.2"
 edition = "2021"
 authors = ["z1xus"]
 
 [dependencies]
-rand = "0.8.5"
+rand = "0.9.0"
 rdev = { version= "0.5.3", features = ["unstable_grab"] }
 tray-item = "0.10.0"
 
 [build-dependencies]
-embed-resource = "2.3"
+embed-resource = "3.0"
 
 [profile.release]
 opt-level = 3
